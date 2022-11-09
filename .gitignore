@@ -127,3 +127,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+subjects_questions.csv
+Submit.csv
+Dataset_model.csv
