@@ -6,6 +6,8 @@ from scipy.stats import spearmanr
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.neighbors import NearestNeighbors
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import scale
 from sklearn import metrics
@@ -14,6 +16,7 @@ from sklearn.decomposition import PCA
 from sklearn.metrics import f1_score
 from sklearn.cluster import KMeans
 from sklearn.inspection import permutation_importance
+from sklearn import svm
 import math
 import time
 
@@ -97,23 +100,29 @@ def feature_importance_random_forest(forest, feature_names):
 
 
 ########################### Logistic Regression #############################
-names = [ 'device_type', 'country', 'region', 'institute_id', 'difficulty',
+
+names = [ 'device_type', 'region', 'institute_id', 'difficulty',
           'scholarity_id', 'novo_user_id', 'gp:carrers',
           'gp:segment']
 
-#tirei : 'product_id', 'knowledge_area_id', 'discipline_id', 'modality_id', 'examining_board_id'
+#tirei : 'product_id', 'knowledge_area_id', 'discipline_id',
+# 'modality_id', 'examining_board_id', 'country'
 
 df = create_df(names)
 
+lista_lr = list()
+for i in range(5):
+    x_train, x_test, y_train, y_test =  train_test_split(df.drop('acertou', axis=1), df['acertou'])
 
-x_train, x_test, y_train, y_test =  train_test_split(df.drop('acertou', axis=1), df['acertou'], random_state=42)
+
+    LogReg = LogisticRegression()
+    LogReg.fit(x_train.values, y_train.values)
+    # feature_importance_logreg(LogReg, names, df)
+    lista_lr.append(f1_score(y_test, LogReg.predict(x_test)))
+print('------------- LogReg --------------')
+print(lista_lr)
 
 
-LogReg = LogisticRegression()
-LogReg.fit(x_train.values, y_train.values)
-feature_importance_logreg(LogReg, names, df)
-print('------------- logreg --------------')
-print(f1_score(y_test, LogReg.predict(x_test)))
 
 
 ########################### Random Forest #############################
@@ -123,26 +132,91 @@ names = [ 'institute_id', 'difficulty',
           'novo_user_id', 'gp:carrers',
           'examining_board_id']
 # tirei : 'country', 'device_type', 'region', 
-# 'scholarity_id' , 'product_id', 'knowledge_area_id', 'gp:segment', 'discipline_id'
+# 'scholarity_id' , 'product_id', 'knowledge_area_id',
+#  'gp:segment', 'discipline_id'
 
 df = create_df(names)
 
+lista_rf = list()
+for i in range(5):
+    x_train, x_test, y_train, y_test =  train_test_split(df.drop('acertou', axis=1), df['acertou'])
 
-x_train, x_test, y_train, y_test =  train_test_split(df.drop('acertou', axis=1), df['acertou'], random_state=87)
+    pca = PCA(n_components=4)
+    transformed = pca.fit_transform(x_train)
+    x_train = pd.DataFrame(transformed)
+    transformed = pca.fit_transform(x_test)
+    x_test = pd.DataFrame(transformed)
 
-pca = PCA(n_components=4)
-transformed = pca.fit_transform(x_train)
-x_train = pd.DataFrame(transformed)
-transformed = pca.fit_transform(x_test)
-x_test = pd.DataFrame(transformed)
-
-clf = RandomForestClassifier(max_depth=2, random_state=0, n_jobs=-1)
-clf.fit(x_train.values, y_train.values)
-# feature_importance_random_forest(clf, names)
+    clf = RandomForestClassifier(max_depth=2, random_state=3, n_jobs=-1)
+    clf.fit(x_train.values, y_train.values)
+    # feature_importance_random_forest(clf, names)
+    lista_rf.append(f1_score(y_test, clf.predict(x_test)))
 print('------------- randomForest --------------')
-print(f1_score(y_test, clf.predict(x_test)))
+print(lista_rf)
 
 
+########################### Grandient Boosting Classifier #############################
 
 
+names = [ 'institute_id', 'difficulty',
+          'novo_user_id', 'gp:carrers',
+          'examining_board_id']
+# tirei : 'country', 'device_type', 'region', 
+# 'scholarity_id' , 'product_id', 'knowledge_area_id',
+#  'gp:segment', 'discipline_id'
 
+df = create_df(names)
+
+lista_gb = list()
+for i in range(5):
+    x_train, x_test, y_train, y_test =  train_test_split(df.drop('acertou', axis=1), df['acertou'])
+
+    bgc = GradientBoostingClassifier(n_estimators=100, learning_rate=1.0,
+                                     max_depth=1, random_state=0)
+    bgc.fit(x_train, y_train)
+    lista_gb.append(f1_score(y_test, bgc.predict(x_test)))
+print('------------- Gradient Boosting --------------')
+print(lista_gb)
+
+
+########################### SVC #############################
+
+names = [ 'institute_id', 'difficulty',
+          'novo_user_id', 'gp:carrers',
+          'examining_board_id']
+# tirei : 'country', 'device_type', 'region', 
+# 'scholarity_id' , 'product_id', 'knowledge_area_id',
+#  'gp:segment', 'discipline_id'
+
+df = create_df(names)
+
+lista_svc = list()
+for i in range(5):
+    x_train, x_test, y_train, y_test =  train_test_split(df.drop('acertou', axis=1), df['acertou'])
+
+    svc = svm.SVC(decision_function_shape='ovo')
+    svc.fit(x_train, y_train)
+    lista_svc.append(f1_score(y_test, svc.predict(x_test)))
+print('------------- SVC --------------')
+print(lista_svc)
+
+########################### Nearest Neighbors #############################
+
+names = [ 'institute_id', 'difficulty',
+          'novo_user_id', 'gp:carrers',
+          'examining_board_id']
+# tirei : 'country', 'device_type', 'region', 
+# 'scholarity_id' , 'product_id', 'knowledge_area_id',
+#  'gp:segment', 'discipline_id'
+
+df = create_df(names)
+
+lista_nn = list()
+for i in range(5):
+    x_train, x_test, y_train, y_test =  train_test_split(df.drop('acertou', axis=1), df['acertou'])
+
+    nn = NearestNeighbors(n_neighbors=2, algorithm='ball_tree')
+    nn.fit(x_train, y_train)
+    lista_nn.append(f1_score(y_test, nn.predict(x_test)))
+print('------------- SVC --------------')
+print(lista_nn)
