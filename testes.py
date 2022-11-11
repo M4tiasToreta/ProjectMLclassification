@@ -21,7 +21,9 @@ from sklearn.decomposition import PCA
 from sklearn.metrics import f1_score
 from sklearn.cluster import KMeans
 from sklearn.inspection import permutation_importance
-
+from sklearn.datasets import make_blobs
+from sklearn.preprocessing import StandardScaler
+from sklearn.cluster import DBSCAN
 
 
 # Reading data
@@ -285,3 +287,19 @@ kmeans = KMeans(n_clusters=2, random_state=0).fit(x_train)
 kmeans.predict(x_test)
 
 
+
+
+centers = [[1, 1], [-1, -1], [1, -1]]
+X, labels_true = make_blobs(
+    n_samples=750, centers=centers, cluster_std=0.4, random_state=0
+)
+
+X = StandardScaler().fit_transform(X)
+
+db = DBSCAN(eps=0.3, min_samples=10).fit(X)
+core_samples_mask = np.zeros_like(db.labels_, dtype=bool)
+core_samples_mask[db.core_sample_indices_] = True
+labels = db.labels_
+
+n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
+n_noise_ = list(labels).count(-1)
