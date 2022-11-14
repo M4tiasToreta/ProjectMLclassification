@@ -50,10 +50,7 @@ from matplotlib import pyplot
 
 ### Data preprocessing with mean encoding
 
-Most of data in the dataset is categorical, being like this makes impossible for the machine learning models to calculate the prevision.
-So, I decided to apply mean encoding method which calculates an average of right answers each label has, this way the model can calculate with numerical
-data. I made the following generic function for that, in which you have to input only the name of the column you want to encode and the dataset you are
-getting data from.
+Most of data in the dataset is categorical, what makes it impossible for machine learning models to calculate previsions. So, I decided to apply mean encoding method which calculates average of right answers each label has, this way models can calculate with numerical data. For that, I made the following generic function, in which you only have to input the name of the column you want to encode and the dataset you are getting data from.
 
 ```
 def mean_encoding(variable, dataset_model):
