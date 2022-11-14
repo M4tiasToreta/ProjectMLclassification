@@ -21,7 +21,7 @@
 
 ### About the competition and datasets
 
-The competition gave us two main datasets and a txt document explaining the columns. The first dataset has 100 questions for each one of 20.000 students, wich have been answered and have a column that indicates wether they got it right or wrong, called "acertou"(means got it right in portuguese). Summing up 2.000.000 rows, that's the dataset our model is supposed to learn from. The second dataset is called Submit, it's the 
+The competition gave us two main datasets and a txt document explaining the columns. The first dataset has 100 questions for each one of 20.000 students, wich have been answered and have a column that indicates whether they got it right or wrong, called "acertou"(means got it right in portuguese). Summing up 2.000.000 rows, that's the dataset our model is supposed to learn from. The second dataset is called Submit, it's the 
 dataset the model is supposed to predict. This second dataset has 20.000 rows, one for each student with a question.
 
 If you want to checkout the data used in this project, all the datasets and txt file with columns descriptions have been listed in the drive below: https://drive.google.com/drive/folders/1VtFkocuaNB8oo3bqF0VCx6ctnJwXitx_
@@ -118,7 +118,7 @@ you want your model to calculate with.
 
 ### Modeling
 
-After preprocessing the data, it's time to start modeling different ML's and see and use the most accurate one. In this document, I will focus in only three,
+After preprocessing the data, it's time to start modeling different MLs to check and use the most accurate one. In this document, I will focus in only three,
 although more were tested. Documented models are: Random forest, Logistic Regression and XGBClassification.
 
 #### Random Forest
@@ -126,8 +126,7 @@ although more were tested. Documented models are: Random forest, Logistic Regres
 Random forest is a machine learning model based in a forest of decision trees that, with the samples given, calculates the mean of decisions of each tree
 and consider those to the final answer.
 
-Used random forest from scikit learn, and the first tests with random forest were with this code below(notice that we are passing the names list with 
-the columns names, so we can filter dataset_model and mean encode it):
+The first tests with random forest, from the scikit learn library, were implemented using the following code (notice that we are passing the names list with the columns names, so we can filter dataset_model and mean encode it):
 
 ```
 names = ['institute_id', 'difficulty',
@@ -156,7 +155,7 @@ y = B0*x0 + B1*x1 + B2*x2 ... Bn*Xn
 and the binary probability comes from the sigmoid:
 p = 1/(1 + e**-y)
 
-Also used from scikit learn. The model was first tested with this scrypt:
+Also used from scikit learn. The model was first tested with this script:
 
 ```
 names = ['institute_id', 'difficulty',
@@ -176,8 +175,7 @@ LogReg.fit(x_train.values, y_train.values)
 LogReg.predict(x_test)
 ```
 
-In feature importance and in validation this models will be formally tested, for now we are simply applying and returning the array with 0's and 1's
-predicted.
+In feature importance and in validation this models will be formally tested, for now we are simply applying and returning the array with 0's and 1's predicted.
 
 #### XGBClassification
 
@@ -185,7 +183,7 @@ predicted.
  XGBoost applies a better regularization technique to reduce overfitting, and it is one of the differences from the gradient boosting."
  This is the definition made by datatechnotes. Basically, XGBClassification, is a type of decision tree.
  
-It was used through its on library. Code used for first trains:
+It was used through its own library. Code used for first trains:
  
  ```
 names = ['institute_id', 'difficulty',
@@ -249,13 +247,13 @@ clf.fit(x_train.values, y_train.values)
 feature_importance_random_forest(clf, names)
  ```
  
- This function requires names of the columns the model and the model fitted itself to plot the feature importances. This way we'll be able to only
+ This function requires names of the columns the model and the model fitted itself to plot the feature importances. This way we'll be able only to
  fit the model with the most important variables.
  
  #### Logistic Regression
  
  As discussed before, logistic regression is a function and the importance of each dimension is its coefficient, so if we want to plot it, we need to
- make python understand each coefficient and plot it. I also made a generic function so it would be easier for anyone who finds this article can
+ make python understand each coefficient and plot it. I also made a generic function so it would be easier for anyone who finds this article to
  replicate it(much scalable too).
  
  ```
@@ -330,9 +328,7 @@ print('------------- randomForest --------------')
 print(sum(lista_rf)/len(lista_rf))
 ```
 
-Running this for each model, seeing every feature importance and extracting the worst features, I came into the conclusion that random forest was the
-better fitted to this problem with those features being the ones that got me most accurancy. You may notice I also added parameters to random forest,
-those are included in its library and I used them so I could have the best score possible.
+Running this for each model, checking every feature importance and extracting the worst features, I came to the conclusion that random forest was better fitted to this problem with those features being the ones that got me most accurancy. You may notice I also added parameters to random forest, those are included in its library and I used them so I could have the best score possible. 
 
 ### PCA dimension decomposition
 
@@ -374,11 +370,9 @@ Turning the prediction into a csv and submitting it to the contest.
 
 ### Final conclusions
 
-Here, in this project, I did the very basic process in machine learning engineering, so I hope for next projects to do more elaborate and creative
-programs.
+Throughout the process of developing this project i was able to learn so much about Machine Learning and acquire new programming skills. I look forward to new and even more challenging projects.
 
-Since I started to work as an intern in a start up, I am passionate by data and since I am a child, I am passionate about science. Bringing those two
-together in this project was a wonderful experience and I learned a lot. I intend to continue growing in this area.
+Eversince i've started working as a data science intern for a local start up, data has been my passion, what came upon wonderfully with my childhood passion, science. Bringing those two together was an amazing experience, learning along great scientist amongst the area, developing my self learning sid. It helped me learn way more than the expected, what makes me want to continue improving and colaborating with the data science comunity.
 
 
 ### References
@@ -390,7 +384,7 @@ together in this project was a wonderful experience and I learned a lot. I inten
 > https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.PCA.html
 > https://scikit-learn.org/stable/
  
- 
+> An extra special thanks to my friend and colegue Nathan whom helped me revise this document. His github: https://github.com/nac0303
  
  
  
