@@ -28,8 +28,8 @@ If you want to checkout the data used in this project, all the datasets and txt 
 
 ### Libraries used throughout this document
 
-The following libraries(along with many others used while the creative process of the competition) can also seen in the 
-main or tests python archives in this repository) 
+The following libraries(along with many others used while the creative process of the competition) can also be seen in the 
+main.py or tests.py python archives in this repository.
 
 ```
 import pandas as pd
