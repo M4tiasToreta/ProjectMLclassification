@@ -130,3 +130,6 @@ dmypy.json
 subjects_questions.csv
 Submit.csv
 Dataset_model.csv
+Real_submit.csv
+Submit2.csv
+.gitignore

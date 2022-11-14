@@ -22,31 +22,41 @@ from sklearn.inspection import permutation_importance
 from sklearn import svm
 import math
 import time
+from xgboost import XGBClassifier
+from matplotlib import pyplot
 
 # querying
+
+
 def query_datadet_model():
     dataset_model = pd.read_csv("Dataset_model.csv")
-    dataset_model = dataset_model[dataset_model['nullified']==0]
-    dataset_model = dataset_model[dataset_model['outdated']==0]
-    dataset_model = dataset_model.reset_index(drop=True)
+    # dataset_model = dataset_model[dataset_model['nullified']==0]
+    # dataset_model = dataset_model[dataset_model['outdated']==0]
+    # dataset_model = dataset_model.reset_index(drop=True)
     return dataset_model
+
 
 def query_subjects_questions():
     subjects_questions = pd.read_csv("subjects_questions.csv")
     return subjects_questions
+
 
 def query_submit():
     submit = pd.read_csv('Submit.csv')
     return submit
 
 # feature engineering
+
+
 def mean_encoding(variable, dataset_model):
     reduced = dataset_model[[variable, 'acertou']]
-    reduced = reduced.dropna()
+    reduced[variable] = reduced[variable].replace(
+        to_replace=float('nan'), value='bolo')
     reduced = reduced.reset_index(drop=True)
     stats = reduced.groupby(variable).mean()
     stats = stats.reset_index()
     return stats
+
 
 def create_df(names):
     dataset_model = query_datadet_model()
@@ -55,6 +65,7 @@ def create_df(names):
     df = dataset_model[names]
     for name in names:
         encoded = mean_encoding(name, dataset_model)
+        df[name] = df[name].replace(to_replace=float('nan'), value='bolo')
         df = df.merge(encoded, how='left', on=name)
         df = df.drop(columns=[name])
         df = df.rename(columns={'acertou': name})
@@ -65,12 +76,14 @@ def create_df(names):
     df = df.reset_index(drop=True)
     return df
 
+
 def sigmoid(x):
     return 1 / (1 + pow(math.e, -x))
 
 # graphs
 
-def feature_importance_logreg(model,feature_names, df):
+
+def feature_importance_logreg(model, feature_names, df):
     w0 = model.intercept_[0]
     w = model.coef_[0]
     idx = 99
@@ -80,18 +93,22 @@ def feature_importance_logreg(model,feature_names, df):
     for i in range(0, 4):
         result += x[i] * w[i]
     result = sigmoid(result)
-    feature_importance = pd.DataFrame(feature_names, columns = ["feature"])
+    feature_importance = pd.DataFrame(feature_names, columns=["feature"])
     feature_importance["importance"] = pow(math.e, w)
-    feature_importance = feature_importance.sort_values(by = ["importance"], ascending=False)
+    feature_importance = feature_importance.sort_values(
+        by=["importance"], ascending=False)
     ax = feature_importance.plot.barh(x='feature', y='importance')
     plt.show()
+
 
 def feature_importance_random_forest(forest, feature_names):
     start_time = time.time()
     importances = forest.feature_importances_
-    std = np.std([tree.feature_importances_ for tree in forest.estimators_], axis=0)
+    std = np.std(
+        [tree.feature_importances_ for tree in forest.estimators_], axis=0)
     elapsed_time = time.time() - start_time
-    print(f"Elapsed time to compute the importances: {elapsed_time:.3f} seconds")
+    print(
+        f"Elapsed time to compute the importances: {elapsed_time:.3f} seconds")
     forest_importances = pd.Series(importances, index=feature_names)
     fig, ax = plt.subplots()
     forest_importances.plot.bar(yerr=std, ax=ax)
@@ -104,39 +121,39 @@ def feature_importance_random_forest(forest, feature_names):
 
 ########################### Logistic Regression #############################
 
-names = [ 'device_type', 'region', 'institute_id', 'difficulty',
-          'scholarity_id', 'novo_user_id', 'gp:carrers',
-          'gp:segment']
+names = ['institute_id', 'difficulty',
+         'novo_user_id',
+         'gp:carrers', 'nullified',
+         'outdated']
 
-#tirei : 'product_id', 'knowledge_area_id', 'discipline_id',
+# tirei : 'product_id', 'knowledge_area_id', 'discipline_id',
 # 'modality_id', 'examining_board_id', 'country'
 
 df = create_df(names)
 
 lista_lr = list()
 for i in range(5):
-    x_train, x_test, y_train, y_test =  train_test_split(df.drop('acertou', axis=1), df['acertou'])
-
+    x_train, x_test, y_train, y_test = train_test_split(df.drop('acertou', axis=1), df['acertou'])
 
     LogReg = LogisticRegression()
     LogReg.fit(x_train.values, y_train.values)
-    # feature_importance_logreg(LogReg, names, df)
+    feature_importance_logreg(LogReg, names, df)
     lista_lr.append(f1_score(y_test, LogReg.predict(x_test)))
 print('------------- LogReg --------------')
 print(sum(lista_lr)/len(lista_lr))
 
 
-
-
 ########################### Random Forest #############################
 
 
-names = [ 'institute_id', 'difficulty',
-          'novo_user_id', 'examining_board_id', 'gp:carrers']
-# tirei : 'country', 'device_type', 'region', 
+names = ['institute_id', 'difficulty',
+         'novo_user_id', 'examining_board_id',
+         'gp:carrers', 'nullified',
+         'outdated', 'publication_year']
+# tirei : 'country', 'device_type', 'region',
 # 'scholarity_id' , 'product_id', 'knowledge_area_id',
 #  'gp:segment' ,'examining_board_id'
-          
+
 
 df = create_df(names)
 
@@ -144,7 +161,7 @@ df = create_df(names)
 lista_rf = list()
 
 for i in range(5):
-    x_train, x_test, y_train, y_test =  train_test_split(df.drop('acertou', axis=1), df['acertou'])
+    x_train, x_test, y_train, y_test = train_test_split(df.drop('acertou', axis=1), df['acertou'])
 
     pca = PCA(n_components=4)
     transformed = pca.fit_transform(x_train)
@@ -152,25 +169,22 @@ for i in range(5):
     transformed = pca.fit_transform(x_test)
     x_test = pd.DataFrame(transformed)
 
-    clf = RandomForestClassifier(max_depth=2, random_state=0, n_jobs=-1)
+    clf = RandomForestClassifier(max_depth=2, random_state=0, n_jobs=-1, criterion='gini', n_estimators=100, bootstrap=False)
     clf.fit(x_train.values, y_train.values)
     lista_rf.append(f1_score(y_test, clf.predict(x_test)))
-    #feature_importance_random_forest(clf, names)
+#feature_importance_random_forest(clf, names)
 print('------------- randomForest --------------')
 print(sum(lista_rf)/len(lista_rf))
-
 
 
 ########################### Grandient Boosting Classifier #############################
 
 
-names = [ 'institute_id', 'difficulty',
-          'novo_user_id', 'gp:carrers',
-          'examining_board_id','country', 
-          'device_type', 'region',
-          'scholarity_id', 'product_id',
-          'knowledge_area_id', 'discipline_id'
-          ]
+names = ['institute_id', 'difficulty',
+         'novo_user_id', 'examining_board_id',
+         'gp:carrers', 'nullified',
+         'outdated', 'publication_year'
+         ]
 # tirei : , , 'region',
 #  'gp:segment', 'discipline_id'
 
@@ -178,11 +192,16 @@ df = create_df(names)
 
 lista_gb = list()
 for i in range(5):
-    x_train, x_test, y_train, y_test =  train_test_split(df.drop('acertou', axis=1), df['acertou'])
+    x_train, x_test, y_train, y_test = train_test_split(
+        df.drop('acertou', axis=1), df['acertou'])
 
-    bgc = GradientBoostingClassifier(n_estimators=100, learning_rate=1.0,
-                                     max_depth=1, random_state=0)
+    bgc = XGBClassifier()
     bgc.fit(x_train, y_train)
+    # feature importance
+    print(bgc.feature_importances_)
+    # plot
+    pyplot.bar(range(len(bgc.feature_importances_)), bgc.feature_importances_)
+    pyplot.show()
     lista_gb.append(f1_score(y_test, bgc.predict(x_test)))
 print('------------- Gradient Boosting --------------')
 print(sum(lista_gb)/len(lista_gb))
@@ -190,10 +209,10 @@ print(sum(lista_gb)/len(lista_gb))
 
 ########################### SVC #############################
 
-names = [ 'institute_id', 'difficulty',
-          'novo_user_id', 'gp:carrers',
-          'examining_board_id']
-# tirei : 'country', 'device_type', 'region', 
+names = ['institute_id', 'difficulty',
+         'novo_user_id', 'gp:carrers',
+         'examining_board_id']
+# tirei : 'country', 'device_type', 'region',
 # 'scholarity_id' , 'product_id', 'knowledge_area_id',
 #  'gp:segment', 'discipline_id'
 
@@ -201,7 +220,8 @@ df = create_df(names)
 
 lista_svc = list()
 for i in range(5):
-    x_train, x_test, y_train, y_test =  train_test_split(df.drop('acertou', axis=1), df['acertou'])
+    x_train, x_test, y_train, y_test = train_test_split(
+        df.drop('acertou', axis=1), df['acertou'])
 
     svc = svm.SVC(decision_function_shape='ovo')
     svc.fit(x_train, y_train)
@@ -211,10 +231,10 @@ print(sum(lista_svc)/len(lista_svc))
 
 ########################### Nearest Neighbors #############################
 
-names = [ 'institute_id', 'difficulty',
-          'novo_user_id', 'gp:carrers',
-          'examining_board_id']
-# tirei : 'country', 'device_type', 'region', 
+names = ['institute_id', 'difficulty',
+         'novo_user_id', 'gp:carrers',
+         'examining_board_id']
+# tirei : 'country', 'device_type', 'region',
 # 'scholarity_id' , 'product_id', 'knowledge_area_id',
 #  'gp:segment', 'discipline_id'
 
@@ -222,7 +242,8 @@ df = create_df(names)
 
 lista_nn = list()
 for i in range(5):
-    x_train, x_test, y_train, y_test =  train_test_split(df.drop('acertou', axis=1), df['acertou'])
+    x_train, x_test, y_train, y_test = train_test_split(
+        df.drop('acertou', axis=1), df['acertou'])
 
     nn = KNeighborsClassifier(n_neighbors=1000)
     nn.fit(x_train, y_train)
