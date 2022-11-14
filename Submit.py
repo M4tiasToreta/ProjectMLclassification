@@ -10,7 +10,6 @@ import math
 
 def query_datadet_model():
     dataset_model = pd.read_csv("Dataset_model.csv")
-    dataset_model = dataset_model.reset_index(drop=True)
     return dataset_model
 
 

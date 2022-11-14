@@ -192,8 +192,7 @@ df = create_df(names)
 
 lista_gb = list()
 for i in range(5):
-    x_train, x_test, y_train, y_test = train_test_split(
-        df.drop('acertou', axis=1), df['acertou'])
+    x_train, x_test, y_train, y_test = train_test_split(df.drop('acertou', axis=1), df['acertou'])
 
     bgc = XGBClassifier()
     bgc.fit(x_train, y_train)

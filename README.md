@@ -17,6 +17,7 @@
 * Cross validation
 * PCA dimension decomposition
 * Final conclusions
+* References
 
 ### About the competition and datasets
 
@@ -84,8 +85,7 @@ def query_submit(names):
     return df
 ```
 
-You might notice that this function is not covered for the dataset model, the dataset the model is actually going to learn from. The reason for this
-is that the NaN treatment for the dataset_model is made in the function where creates the training dataframe to go straight to the model:
+You might notice that this function is not covered for the dataset model, the dataset the model is actually going to learn from. The reason for this is that the NaN treatment for the dataset_model is made in the function where creates the training dataframe to go straight to the model:
 
 
 ```
@@ -116,12 +116,12 @@ def query_datadet_model():
 ```
 
 The second function above is just so the first one is not incomplete, it is for reading the main dataset and turning it to a dataframe. The first one
-is the creating dataframe which will be used in the model This function only requires to input names of columns in a list type variable for those columns
+is the creating dataframe which will be used in the model. This function only requires to input names of columns in a list type variable for those columns
 you want your model to calculate with.
 
 ### Modeling
 
-After preprocessing the data, it's time to start modeling different ML's and see use the most accurate one. In this document I will focus in only three,
+After preprocessing the data, it's time to start modeling different ML's and see and use the most accurate one. In this document, I will focus in only three,
 although more were tested. Documented models are: Random forest, Logistic Regression and XGBClassification.
 
 #### Random Forest
@@ -382,7 +382,16 @@ programs.
 
 Since I started to work as an intern in a start up, I am passionate by data and since I am a child, I am passionate about science. Bringing those two
 together in this project was a wonderful experience and I learned a lot. I intend to continue growing in this area.
- 
+
+
+### References
+
+> https://scikit-learn.org/stable/auto_examples/ensemble/plot_forest_importances.html
+> https://sefiks.com/2021/01/06/feature-importance-in-logistic-regression/#:~:text=Feature%20importance%20is%20a%20common,regression%20and%20decision%20trees%20before.
+> https://machinelearningmastery.com/feature-importance-and-feature-selection-with-xgboost-in-python/
+> https://xgboost.readthedocs.io/en/stable/python/python_api.html
+> https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.PCA.html
+> https://scikit-learn.org/stable/
  
  
  
