@@ -7,11 +7,11 @@
 * Data preprocessing with mean encoding
 * Modeling
   * Random Forest
-  * Logistic Regresion
+  * Logistic Regression
   * XGBClassification
 * Feature importance
   * Random Forest
-  * Logistic Regresion
+  * Logistic Regression
   * XGBClassification
 * Validation
 * Cross validation
@@ -21,7 +21,7 @@
 
 ### About the competition and datasets
 
-The competition gave us two main datasets and a txt document explaining the columns. The first dataset has 100 questions for each one of 20.000 students, wich have been answered and have a column that indicates whether they got it right or wrong, called "acertou"(means got it right in portuguese). Summing up 2.000.000 rows, that's the dataset our model is supposed to learn from. The second dataset is called Submit, it's the 
+The competition gave us two main datasets and a txt document explaining the columns. The first dataset had 100 questions for each one of 20.000 students, wich have been answered and had a column that indicates whether they got it right or wrong, called "acertou"(means got it right in portuguese). Summing up 2.000.000 rows, that's the dataset our model is supposed to learn from. The second dataset is called Submit, it's the 
 dataset the model is supposed to predict. This second dataset has 20.000 rows, one for each student with a question.
 
 If you want to checkout the data used in this project, all the datasets and txt file with columns descriptions have been listed in the drive below: https://drive.google.com/drive/folders/1VtFkocuaNB8oo3bqF0VCx6ctnJwXitx_
@@ -50,7 +50,7 @@ from matplotlib import pyplot
 
 ### Data preprocessing with mean encoding
 
-Most of data in the dataset is categorical, what makes it impossible for machine learning models to calculate previsions. So, I decided to apply mean encoding method which calculates average of right answers each label has, this way models can calculate with numerical data. For that, I made the following generic function, in which you only have to input the name of the column you want to encode and the dataset you are getting data from.
+Most of data in the dataset is categorical, what makes it impossible for machine learning models to calculate previsions. So, I decided to apply mean encoding method which calculates the average of correct answers each label has, this way models can calculate with numerical data. For that, I made the following generic function, in which you only have to input the name of the column you want to encode and the dataset you are getting data from.
 
 ```
 def mean_encoding(variable, dataset_model):
@@ -113,7 +113,7 @@ def query_datadet_model():
 ```
 
 The second function above is just so the first one is not incomplete, it is for reading the main dataset and turning it to a dataframe. The first one
-is the creating dataframe which will be used in the model. This function only requires to input names of columns in a list type variable for those columns
+is the creating dataframe which will be used in the model. This function only requires inputing names of columns in a list type variable for those columns
 you want your model to calculate with.
 
 ### Modeling
@@ -145,14 +145,17 @@ clf.fit(x_train.values, y_train.values)
 ```
 
 The train_test_split is a way to split your data so you can train your model and evaluate it according to the results you want. For now, we are going to
-let like this and move on, but later on we are going to talk about validation, cross validation, feature importance and how to make this model more
+leave like this and move on, but later on we are going to talk about validation, cross validation, feature importance and how to make this model more
 accurate.
 
 #### Logistic Regression
 
-Logistic Regression is a statistics formula in which is based on a function that depends on variables and cofficients.
+Logistic Regression is a statistics formula in which its base function depends on variables and cofficients.
+
 y = B0*x0 + B1*x1 + B2*x2 ... Bn*Xn
+
 and the binary probability comes from the sigmoid:
+
 p = 1/(1 + e**-y)
 
 Also used from scikit learn. The model was first tested with this script:
@@ -328,7 +331,7 @@ print('------------- randomForest --------------')
 print(sum(lista_rf)/len(lista_rf))
 ```
 
-Running this for each model, checking every feature importance and extracting the worst features, I came to the conclusion that random forest was better fitted to this problem with those features being the ones that got me most accurancy. You may notice I also added parameters to random forest, those are included in its library and I used them so I could have the best score possible. 
+Running this for each model, checking every feature importance and extracting the worst features, I came to the conclusion that random forest was better fitted to this problem with those features being the ones that got me most accuracy. You may notice I also added parameters to random forest, those are included in its library and I used them so I could have the best score possible. 
 
 ### PCA dimension decomposition
 
