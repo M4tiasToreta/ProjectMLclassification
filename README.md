@@ -21,7 +21,7 @@
 
 ### About the competition and datasets
 
-The competition gave us two main datasets and a txt document explaining the columns. The first dataset had 100 questions for each one of 20.000 students, wich have been answered and had a column that indicates whether they got it right or wrong, called "acertou"(means got it right in portuguese). Summing up 2.000.000 rows, that's the dataset our model is supposed to learn from. The second dataset is called Submit, it's the 
+The competition gave us two main datasets and a txt document explaining the columns. The first dataset had 20.000 students, for each one 100 questions which were answered. A column (of the dataset) indicates whether they got it right or wrong, called "acertou"(means got it right in portuguese). Summing up 2.000.000 rows, that's the dataset our model is supposed to learn from. The second dataset is called Submit, it's the 
 dataset the model is supposed to predict. This second dataset has 20.000 rows, one for each student with a question.
 
 If you want to checkout the data used in this project, all the datasets and txt file with columns descriptions have been listed in the drive below: https://drive.google.com/drive/folders/1VtFkocuaNB8oo3bqF0VCx6ctnJwXitx_
