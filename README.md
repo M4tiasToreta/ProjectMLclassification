@@ -21,14 +21,14 @@
 
 ### About the competition and datasets
 
-The competition gave us two main datasets and a txt document explaining the columns. The first dataset had 20.000 students, for each one 100 questions which were answered. A column (of the dataset) indicates whether they got it right or wrong, called "acertou"(means got it right in portuguese). Summing up 2.000.000 rows, that's the dataset our model is supposed to learn from. The second dataset is called Submit, it's the 
-dataset the model is supposed to predict. This second dataset has 20.000 rows, one for each student with a question.
+The competition gave us two main datasets and a txt document explaining the columns. The first dataset had 20.000 students, for each one, 100 questions which were answered. A column (of the dataset) indicates whether they got it right or wrong, called "acertou"(means got it right in portuguese). Summing up 2.000.000 rows, that's this dataset our model is supposed to learn from. The second dataset is called Submit, it's the 
+dataset with 20.000 rows which the model is supposed to predict.
 
 If you want to checkout the data used in this project, all the datasets and txt file with columns descriptions have been listed in the drive below: https://drive.google.com/drive/folders/1VtFkocuaNB8oo3bqF0VCx6ctnJwXitx_
 
 ### Libraries used throughout this document
 
-The following libraries(along with many others used while the creative process of the competition) can also be seen in the 
+The following libraries(along with many others used while the creative process of this competition) can also be seen in the 
 main.py or tests.py python archives in this repository.
 
 ```
@@ -50,7 +50,7 @@ from matplotlib import pyplot
 
 ### Data preprocessing with mean encoding
 
-Most of data in the dataset is categorical, what makes it impossible for machine learning models to calculate previsions. So, I decided to apply mean encoding method which calculates the average of correct answers each label has, this way models can calculate with numerical data. For that, I made the following generic function, in which you only have to input the name of the column you want to encode and the dataset you are getting data from.
+Most of data in the dataset are categorical, what makes it impossible for machine learning models to calculate previsions. So, I decided to apply mean encoding method which calculates the average of correct answers each label has, this way models can calculate with numerical data. For that, I made the following generic function, in which you only have to input the name of the column you want to encode and the dataset you are getting data from.
 
 ```
 def mean_encoding(variable, dataset_model):
@@ -82,7 +82,7 @@ def query_submit(names):
     return df
 ```
 
-You might notice that this function is not covered for the dataset model, the dataset the model is actually going to learn from. The reason for this is that the NaN treatment for the dataset_model is made in the function where creates the training dataframe to go straight to the model:
+You might notice that this function is not covered for the dataset model, the one which the model is actually going to learn from. The reason for this is that the NaN treatment for the dataset_model is made in the function where creates the training dataframe to go straight to the model:
 
 
 ```
@@ -113,13 +113,11 @@ def query_datadet_model():
 ```
 
 The second function above is just so the first one is not incomplete, it is for reading the main dataset and turning it to a dataframe. The first one
-is the creating dataframe which will be used in the model. This function only requires inputing names of columns in a list type variable for those columns
-you want your model to calculate with.
+is the creating dataframe which will be used in the model. This function only requires inputing names of columns in a list type variable for those columns you want your model to calculate with.
 
 ### Modeling
 
-After preprocessing the data, it's time to start modeling different MLs to check and use the most accurate one. In this document, I will focus in only three,
-although more were tested. Documented models are: Random forest, Logistic Regression and XGBClassification.
+After preprocessing the data, it's time to start modeling different MLs to check and use the most accurate one. In this document, I will focus in only three, although more were tested. Documented models are: Random forest, Logistic Regression and XGBClassification.
 
 #### Random Forest
 
